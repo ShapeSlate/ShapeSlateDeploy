@@ -15,38 +15,21 @@ public class SlateUserController {
     @Autowired private SlateUserService slateUserService;
 
     @PostMapping("/login")
-    public SlateUser login(@RequestBody SlateUser slateUser) {
+    public ResponseEntity login(@RequestBody SlateUser slateUser) {
         SlateUser myUser = slateUserService.findByUsername(slateUser.getUsername());
         System.out.println(BCrypt.checkpw(slateUser.getPassword(), myUser.getPassword()));
         if(myUser != null) {
             if(BCrypt.checkpw(slateUser.getPassword(), myUser.getPassword())){
-                return myUser;
+                return new ResponseEntity(myUser, HttpStatus.OK);
             }
             else {
-                throw new IllegalArgumentException();
+                return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
             }
         }
         else {
-            throw new IllegalArgumentException();
+            return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
         }
     }
-
-//    @PostMapping("/login")
-//    public ResponseEntity login(@RequestBody SlateUser slateUser) {
-//        SlateUser myUser = slateUserService.findByUsername(slateUser.getUsername());
-//        System.out.println(BCrypt.checkpw(slateUser.getPassword(), myUser.getPassword()));
-//        if(myUser != null) {
-//            if(BCrypt.checkpw(slateUser.getPassword(), myUser.getPassword())){
-//                return new ResponseEntity(myUser, HttpStatus.OK);
-//            }
-//            else {
-//                return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
-//            }
-//        }
-//        else {
-//            return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
-//        }
-//    }
 
     @PostMapping("/register")
     public SlateUser register(@RequestBody SlateUser slateUser) {
